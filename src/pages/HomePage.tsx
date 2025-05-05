@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import axios from "axios";
 import { FaSearch, FaCalendarAlt, FaNewspaper, FaFilter } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
@@ -50,7 +50,18 @@ function HomePage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  // Универсальный обработчик для select элементов
+  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setCurrentPage(0);
+  };
+
+  // Отдельный обработчик для input элементов
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFilters((prev) => ({
       ...prev,
@@ -113,22 +124,23 @@ function HomePage() {
       </div>
 
       {/* Filters Section */}
-      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-md -mt-10 mb-10 p-6 relative z-10 mx-4">
+      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-md -mt-10 mb-10 p-6 relative z-10 ">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
             <FaFilter className="text-blue-500" /> Фильтры
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full">
+            {/* Сортировка */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Сортировка
               </label>
               <select
                 name="sortBy"
                 value={filters.sortBy}
-                onChange={handleFilterChange}
-                className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={handleSelectChange}
+                className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               >
                 <option value="publishedAt">По дате</option>
                 <option value="relevancy">По релевантности</option>
@@ -136,25 +148,27 @@ function HomePage() {
               </select>
             </div>
 
+            {/* Язык */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Язык
               </label>
               <select
                 name="language"
                 value={filters.language}
-                onChange={handleFilterChange}
-                className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                onChange={handleSelectChange}
+                className="w-full pl-3 pr-10 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
               >
-                <option value="en">Английский</option>
+                <option value="en">English</option>
                 <option value="ru">Русский</option>
-                <option value="de">Немецкий</option>
-                <option value="fr">Французский</option>
+                <option value="de">Deutsch</option>
+                <option value="fr">Français</option>
               </select>
             </div>
 
+            {/* Дата */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Дата
               </label>
               <div className="relative">
@@ -162,27 +176,28 @@ function HomePage() {
                   type="date"
                   name="date"
                   value={filters.date}
-                  onChange={handleFilterChange}
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={handleInputChange}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 />
-                <FaCalendarAlt className="absolute left-3 top-3 text-gray-400" />
+                <FaCalendarAlt className="absolute left-3 top-3 text-gray-400 pointer-events-none" />
               </div>
             </div>
 
+            {/* Источник */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Источник
               </label>
               <div className="relative">
                 <input
                   type="text"
                   name="source"
-                  placeholder="Название источника"
+                  placeholder="Введите название"
                   value={filters.source}
-                  onChange={handleFilterChange}
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={handleInputChange}
+                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                 />
-                <FaNewspaper className="absolute left-3 top-3 text-gray-400" />
+                <FaNewspaper className="absolute left-3 top-3 text-gray-400 pointer-events-none" />
               </div>
             </div>
           </div>
